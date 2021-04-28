@@ -111,3 +111,97 @@ y que atiende peticiones de usuario
 Software que se ejecuta realizando una serie de tareas de 
 forma finita en el tiempo
     Programa de instalación
+    
+    
+Instalacion de ISTIO
+- Library ISTIO -> CRD
+- Control-plane ISTIO = NAMESPACE + Recursos ISTIOD
+- INGRESS
+- EGRESS
+
+Activar la injección automatica de sidecars en un namespace bookinfo
+
+Despliegue de una pp bookinfo en el ns bookinfo
+Servicios:
+    details: Mostrar los detalles de un libro
+    ratings: Mostrar las valoraciones de un libro
+    reviews: Mostrar las reseñas de un libro
+    productpage: Mostrar toda la informacion
+Deployments:
+    details: v1
+    ratings: v1
+    reviews: v1 v2 v3
+    productpage: v1
+
+
+---> PRODUCTPAGE   ------> DETAILS
+                   ------> REVIEWS
+                               v1
+                               v2  |
+                               v3  |------> RATINGS  
+                               
+                               
+CLUSTER IP
+NODE PORT     <<<
+LOAD BALANCER <<<
+
+
+
+
+
+VIRTUALSERVICE es una capa por encima de nuestro SERVICE
+---> Es el que me permite balancear la carga entre los pods asociados a un servicio
+
+
+
+INGRESS ----> RUTA ----> SERVICE1
+                            90% -----> POD v1
+                            10% -----> POD v2
+                            
+INGRESS ----> RUTA ----> SERVICE1
+
+
+
+                    En ISTIO Esas reglas se ejecutan por sidecar (proxy)? 
+
+                    Reglas de NetFilter (IPTABLES) ME LAS FUMO. 
+                    SERVICE1------------------
+                       VV                    V                  
+                      PROXY-----------
+                       ^^                                           SERVICIO
+GATEWAY -------> VIRTUALSERVICES                                       VV
+                                      ---------> POD INFO v1   -----> PROXY -----> POD 17, 19, 28, 43
+                                      ---------> POD INFO v1
+                                      ---------> POD INFO v2
+                                      ---------> POD INFO v2
+                                      ---------> POD INFO v2
+                  (ampliar la configuración que hago de el enrutamiento)
+                    10% balanceo RR POD v1                    
+                    90% balanceo LEAST POD v2                    
+
+Que es un virtualService (Configuración de enrutamiento para el proxy)
+
+
+    Quiero una cola de 1000 peticiones
+    Quiero un timeout en cola de 10s
+
+
+SERVICIO?
+    - Nombre
+    - Balanceo
+
+
+SERVICE         <<<<< Desarrollador .... Información: Quien hace que
+VIRTUALSERVICE <<<<<< No es responsabilidad del desarrollador:
+                            Operador del cluster
+
+Entorno de desarrollo: 
+    100% trafico vaya a v2
+    
+Entorno de producción
+    100% trafico vaya a v1
+    90% trafico vaya a v1 - 10% trafico v2
+    50% trafico vaya a v1 - 50% trafico v2
+    100% trafico vaya a v2
+    
+Arquitectura de sistemas / Devops <<<< PRODUCCION ???
