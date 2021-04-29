@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: external-svc-nginxcluster
+spec:
+  hosts:
+  - nginxexterno
+  ports:
+  - number: 8081
+    name: nginx1
+    protocol: http
+  - number: 8082
+    name: nginx2
+    protocol: http
+  location: MESH_INTERNAL
+  resolution: STATIC
+  endpoints:
+  - address: 54.194.187.143
+  - address: 172.31.9.46
